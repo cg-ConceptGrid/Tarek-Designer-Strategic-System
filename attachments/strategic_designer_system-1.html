@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strategic Designer System</title>
+<style>
+:root {
+  --site-primary: #173F35;
+  --site-secondary: #D8B878;
+  --site-background: #F4F1E9;
+  --site-on-primary: #FFFFFF;
+  --site-on-secondary: #1F261F;
+  --site-on-background: #202720;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  color-scheme: light dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); }
+#app { min-height: 100vh; background-color: var(--site-background); color: var(--site-on-background); }
+.shell { display: grid; grid-template-columns: 246px minmax(0,1fr); min-height: 100vh; }
+.sidebar { background: var(--site-primary); color: var(--site-on-primary); padding: calc(25px * var(--site-spacing-scale)) 16px; display:flex; flex-direction:column; gap:26px; }
+.brand { display:flex; gap:11px; align-items:center; padding: 0 8px; }
+.mark { width:38px; height:38px; border:1px solid #d8b878; color:#d8b878; display:grid; place-items:center; border-radius: 12px; font-weight:800; letter-spacing:-2px; }
+.brand strong { display:block; font-size:13px; letter-spacing:.12em; }
+.brand small { display:block; opacity:.65; margin-top:4px; font-size:10px; letter-spacing:.13em; }
+.nav-label { padding:0 12px; opacity:.52; font-size:10px; letter-spacing:.16em; text-transform:uppercase; }
+nav { display:grid; gap:5px; }
+nav button { background:transparent; border:0; color:inherit; text-align:left; border-radius:10px; padding:12px; display:flex; gap:11px; align-items:center; cursor:pointer; font:inherit; font-size:13px; opacity:.78; }
+nav button.active, nav button:hover { background:#ffffff18; opacity:1; }
+.nav-icon { width:20px; text-align:center; color:var(--site-secondary); }
+.sidebar-foot { margin-top:auto; padding:14px; border:1px solid #ffffff26; border-radius:14px; font-size:11px; line-height:1.6; color:#e2e8df; }
+.sidebar-foot b { color:var(--site-secondary); }
+main { min-width:0; padding:30px clamp(18px,3vw,44px) 44px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:34px; }
+.eyebrow { color:var(--site-primary); font-size:10px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+.top-actions { display:flex; align-items:center; gap:10px; }
+.pill { border:1px solid #b9c1b7; border-radius:999px; padding:8px 12px; font-size:11px; background:transparent; }
+.avatar { background:var(--site-secondary); color:#242a23; width:31px; height:31px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:800; }
+h1,h2,h3,p { margin-top:0; }
+h1 { font-size:calc(clamp(29px,4vw,47px) * var(--site-heading-scale)); line-height:1.08; letter-spacing:-.055em; margin:11px 0 13px; max-width:720px; }
+h1 em { font-family: Georgia, serif; font-weight:400; color:#9a7435; }
+.sub { color:#667067; font-size:14px; line-height:1.7; max-width:680px; margin-bottom:25px; }
+.hero { display:flex; justify-content:space-between; gap:25px; align-items:flex-end; margin-bottom:28px; }
+.primary-btn { border:0; border-radius:10px; padding:13px 17px; background:var(--site-primary); color:var(--site-on-primary); font-weight:700; cursor:pointer; font-size:12px; white-space:nowrap; }
+.secondary-btn { border:1px solid #b7c0b5; border-radius:9px; padding:10px 13px; background:transparent; cursor:pointer; color:inherit; font-size:12px; }
+.metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:26px; }
+.metric,.panel,.project-card { border:1px solid #d8d9cf; background:light-dark(#fffdf8,#242a27); border-radius:calc(16px * var(--site-radius-scale)); }
+.metric { padding:17px; }
+.metric .label { color:#778078; font-size:11px; }
+.metric strong { display:block; font-size:27px; letter-spacing:-.04em; margin:9px 0 5px; }
+.metric small { font-size:10px; color:#6b7a6e; }
+.section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:25px 0 13px; }
+.section-head h2 { font-size:17px; margin:0; letter-spacing:-.03em; }
+.section-head span { font-size:11px; color:#7c847c; }
+.workspace { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(250px,.85fr); gap:14px; }
+.panel { padding:20px; min-width:0; }
+.panel h3 { font-size:14px; margin-bottom:6px; }
+.muted { color:#7b837b; font-size:11px; line-height:1.6; }
+.project-list { display:grid; gap:10px; margin-top:16px; }
+.project-card { display:flex; align-items:center; gap:13px; padding:12px; cursor:pointer; text-align:left; width:100%; color:inherit; }
+.project-card:hover { border-color:var(--site-primary); }
+.project-icon { width:43px; height:43px; border-radius:10px; display:grid; place-items:center; font-size:18px; background:#e7e6d9; color:#24483c; flex-shrink:0; }
+.project-meta { flex:1; min-width:0; }
+.project-meta b { display:block; font-size:12px; margin-bottom:5px; }
+.project-meta small { display:block; font-size:10px; color:#7a8379; }
+.status { font-size:10px; border-radius:999px; padding:5px 8px; background:#e5eee4; color:#356449; white-space:nowrap; }
+.stage-list { margin-top:15px; display:grid; gap:0; }
+.stage { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid #e2e2d9; }
+.stage:last-child { border-bottom:0; }
+.stage-num { width:27px; height:27px; flex-shrink:0; border-radius:8px; display:grid; place-items:center; background:#ece7d9; color:#806431; font-size:10px; font-weight:800; }
+.stage b { display:block; font-size:11px; margin:2px 0 4px; }
+.stage small { font-size:10px; color:#7b837b; line-height:1.5; display:block; }
+.progress { height:5px; background:#e5e5dc; border-radius:99px; overflow:hidden; margin:13px 0 8px; }
+.progress span { display:block; width:35%; height:100%; background:var(--site-primary); }
+.tools { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.tool { text-align:left; padding:16px; border:1px solid #d8d9cf; border-radius:14px; background:light-dark(#fffdf8,#242a27); cursor:pointer; color:inherit; min-height:130px; }
+.tool:hover { border-color:var(--site-primary); transform:translateY(-1px); }
+.tool .emoji { font-size:22px; margin-bottom:15px; display:block; }
+.tool b { display:block; font-size:12px; margin-bottom:6px; }
+.tool small { color:#7b837b; font-size:10px; line-height:1.5; }
+.view { display:none; }
+.view.active { display:block; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.field { display:grid; gap:7px; }
+.field label { font-size:11px; color:#687268; font-weight:700; }
+.field input,.field select,.field textarea { width:100%; border:1px solid #cdd2c8; background:light-dark(#fff,#202622); color:inherit; border-radius:9px; padding:12px; font:inherit; font-size:12px; }
+.field textarea { min-height:86px; resize:vertical; }
+.field.full { grid-column:1/-1; }
+.form-actions { display:flex; gap:10px; margin-top:17px; flex-wrap:wrap; }
+.output { white-space:pre-wrap; line-height:1.7; font-size:12px; border:1px dashed #aab5a8; background:light-dark(#f8f8f0,#202622); border-radius:12px; padding:16px; min-height:100px; margin-top:16px; }
+.swatches { display:flex; gap:8px; margin-top:14px; }
+.swatch { height:70px; flex:1; border-radius:10px; padding:8px; display:flex; align-items:flex-end; font-size:9px; font-weight:700; }
+.note { border-left:3px solid #c9a45e; padding:12px 14px; background:#d8b87820; font-size:11px; line-height:1.6; margin-top:14px; }
+.toast { position:fixed; bottom:18px; right:18px; padding:12px 16px; border-radius:10px; background:#173f35; color:#fff; font-size:12px; display:none; box-shadow:0 8px 24px #0002; z-index:5; }
+@media (prefers-color-scheme: dark) {
+ .sub,.muted,.metric .label,.metric small,.project-meta small,.stage small,.tool small,.section-head span { color:#aab4aa; }
+ .eyebrow { color:#d8b878; }
+ .project-icon { background:#34443b; color:#e5d4a7; }
+ .status { background:#294537; color:#a9d6b6; }
+ .stage-num { background:#403a2a; color:#e0c27e; }
+ .progress,.swatch { border-color:#4b554c; }
+ .stage { border-color:#3a433c; }
+}
+@media (max-width:900px) {
+ .shell { grid-template-columns:74px minmax(0,1fr); }
+ .sidebar { padding:20px 9px; align-items:center; }
+ .brand { padding:0; }
+ .brand div:last-child,.nav-label,nav button .nav-text,.sidebar-foot { display:none; }
+ nav { width:100%; }
+ nav button { justify-content:center; padding:13px 0; }
+ .nav-icon { width:auto; }
+ .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .workspace { grid-template-columns:1fr; }
+}
+@media (max-width:600px) {
+ main { padding:20px 14px 32px; }
+ .hero { align-items:flex-start; flex-direction:column; }
+ .topbar { margin-bottom:25px; }
+ .metrics { gap:8px; }
+ .metric { padding:13px; }
+ .metric strong { font-size:23px; }
+ .tools { grid-template-columns:1fr; }
+ .tool { min-height:0; }
+ .form-grid { grid-template-columns:1fr; }
+ .field.full { grid-column:auto; }
+ .pill { display:none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="mark">SD</div><div><strong>STRATEGIC</strong><small>DESIGNER SYSTEM</small></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav id="nav">
+    <button class="active" data-view="dashboard"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></button>
+    <button data-view="brief"><span class="nav-icon">✳</span><span class="nav-text">Brand Brief</span></button>
+    <button data-view="strategy"><span class="nav-icon">⌘</span><span class="nav-text">Brand Strategy</span></button>
+    <button data-view="identity"><span class="nav-icon">◈</span><span class="nav-text">Visual Identity</span></button>
+    <button data-view="prompts"><span class="nav-icon">✦</span><span class="nav-text">Prompt Studio</span></button>
+    <button data-view="guidelines"><span class="nav-icon">▤</span><span class="nav-text">Brand Guidelines</span></button>
+  </nav>
+  <div class="sidebar-foot"><b>DESIGN WITH INTENT.</b><br>From business insight to a distinctive, consistent brand system.</div>
+</aside>
+<main>
+  <div class="topbar"><div class="eyebrow">BRAND INTELLIGENCE WORKSPACE / 01</div><div class="top-actions"><span class="pill">Prototype · Local workspace</span><div class="avatar">SD</div></div></div>
+  <section class="view active" id="dashboard">
+    <div class="hero"><div><div class="eyebrow">MONDAY MINDSET · CREATIVE DIRECTION</div><h1>Make brands mean<br><em>something.</em></h1><p class="sub">A strategic workspace for building brands with clarity, character, and consistency — from the first discovery question to the final brand guideline.</p></div><button class="primary-btn" onclick="showView('brief')">＋ Start a brand project</button></div>
+    <div class="metrics">
+      <div class="metric"><div class="label">WORKFLOW STAGES</div><strong>06</strong><small>One connected system</small></div>
+      <div class="metric"><div class="label">STRATEGY FIRST</div><strong>01</strong><small>Position before decoration</small></div>
+      <div class="metric"><div class="label">BRAND TOUCHPOINTS</div><strong>360°</strong><small>Designed for consistency</small></div>
+      <div class="metric"><div class="label">PROJECT STATUS</div><strong id="projectCount">01</strong><small>Sample project loaded</small></div>
+    </div>
+    <div class="workspace">
+      <div class="panel"><h3>Brand projects</h3><p class="muted">A focused view of active identity work.</p>
+        <div class="project-list" id="projects">
+          <button class="project-card" onclick="showView('strategy')"><div class="project-icon">✳</div><div class="project-meta"><b>Na3'am Grill · Brand identity</b><small>Food & beverage · Strategy and visual system</small></div><span class="status">In progress</span></button>
+          <button class="project-card" onclick="showView('identity')"><div class="project-icon">◈</div><div class="project-meta"><b>Borj Al Hamam · Brand refresh</b><small>Hospitality · Identity exploration</small></div><span class="status">Concept</span></button>
+        </div>
+      </div>
+      <div class="panel"><h3>The strategic workflow</h3><p class="muted">Move from meaning to a measurable brand system.</p>
+        <div class="stage-list">
+          <div class="stage"><div class="stage-num">01</div><div><b>Discover</b><small>Business, audience, context and ambition</small></div></div>
+          <div class="stage"><div class="stage-num">02</div><div><b>Define</b><small>Positioning, promise and personality</small></div></div>
+          <div class="stage"><div class="stage-num">03</div><div><b>Design</b><small>Logo, color, typography and visual language</small></div></div>
+          <div class="stage"><div class="stage-num">04</div><div><b>Deploy</b><small>Touchpoints, rules and rollout</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-head"><h2>Creative tools</h2><span>Built for practical output</span></div>
+    <div class="tools">
+      <button class="tool" onclick="showView('brief')"><span class="emoji">◉</span><b>Brand discovery</b><small>Capture the brief, audience, goals and constraints.</small></button>
+      <button class="tool" onclick="showView('strategy')"><span class="emoji">⌘</span><b>Strategy canvas</b><small>Shape positioning, differentiators and brand voice.</small></button>
+      <button class="tool" onclick="showView('prompts')"><span class="emoji">✦</span><b>Prompt studio</b><small>Generate a tailored creative direction prompt.</small></button>
+    </div>
+  </section>
+  <section class="view" id="brief">
+    <div class="hero"><div><div class="eyebrow">PHASE 01 / DISCOVERY</div><h1>Build the <em>brief.</em></h1><p class="sub">A clear brief makes every design decision more intentional. Complete what you know; refine the rest as the project develops.</p></div></div>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field"><label for="brandName">BRAND / PROJECT NAME *</label><input id="brandName" placeholder="e.g. Na3'am Grill"></div>
+        <div class="field"><label for="industry">INDUSTRY</label><select id="industry"><option>Food & Beverage</option><option>Hospitality</option><option>Retail</option><option>Real Estate</option><option>Technology</option><option>Professional Services</option><option>Other</option></select></div>
+        <div class="field"><label for="audience">PRIMARY AUDIENCE</label><input id="audience" placeholder="Who should choose this brand?"></div>
+        <div class="field"><label for="market">MARKET / LOCATION</label><input id="market" placeholder="e.g. Egypt · Urban families"></div>
+        <div class="field full"><label for="goals">BUSINESS GOALS</label><textarea id="goals" placeholder="What should the brand help the business achieve?"></textarea></div>
+        <div class="field"><label for="personality">BRAND PERSONALITY</label><input id="personality" placeholder="e.g. confident, warm, modern"></div>
+        <div class="field"><label for="competitors">COMPETITORS / REFERENCES</label><input id="competitors" placeholder="Names, links or visual references"></div>
+        <div class="field full"><label for="constraints">MUST KEEP / MUST AVOID</label><textarea id="constraints" placeholder="Existing logo, colors, budget, production limits, cultural considerations…"></textarea></div>
+      </div>
+      <div class="form-actions"><button class="primary-btn" onclick="saveBrief()">Save brief & build project summary</button><button class="secondary-btn" onclick="clearBrief()">Clear form</button></div>
+      <div class="output" id="briefOutput">Your structured brand brief will appear here.</div>
+    </div>
+  </section>
+  <section class="view" id="strategy">
+    <div class="hero"><div><div class="eyebrow">PHASE 02 / DEFINE</div><h1>Strategy before <em>style.</em></h1><p class="sub">Create a useful strategic foundation. These fields guide the design direction rather than replacing customer research or market validation.</p></div></div>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field"><label for="position">POSITIONING</label><textarea id="position" placeholder="What space should the brand own in the customer's mind?"></textarea></div>
+        <div class="field"><label for="promise">BRAND PROMISE</label><textarea id="promise" placeholder="What meaningful value can customers expect consistently?"></textarea></div>
+        <div class="field"><label for="difference">DIFFERENTIATORS</label><textarea id="difference" placeholder="What can this brand credibly do differently?"></textarea></div>
+        <div class="field"><label for="voice">VOICE & TONE</label><textarea id="voice" placeholder="How does the brand sound? What should it never sound like?"></textarea></div>
+        <div class="field full"><label for="message">CORE MESSAGE</label><input id="message" placeholder="The one thing you want people to remember"></div>
+      </div>
+      <div class="form-actions"><button class="primary-btn" onclick="buildStrategy()">Generate strategy summary</button><button class="secondary-btn" onclick="copyText('strategyOutput')">Copy summary</button></div>
+      <div class="output" id="strategyOutput">Complete the strategy canvas to create your summary.</div>
+    </div>
+  </section>
+  <section class="view" id="identity">
+    <div class="hero"><div><div class="eyebrow">PHASE 03 / DESIGN</div><h1>Define the visual <em>world.</em></h1><p class="sub">Use this identity direction board to align visual choices with the brand's strategy.</p></div></div>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field"><label for="style">VISUAL DIRECTION</label><select id="style"><option>Modern minimal</option><option>Premium editorial</option><option>Bold expressive</option><option>Warm handcrafted</option><option>Heritage contemporary</option><option>Playful approachable</option></select></div>
+        <div class="field"><label for="palette">COLOR MOOD</label><select id="palette"><option>Forest green + warm ivory + brass</option><option>Ink black + bone + vivid red</option><option>Deep navy + sky + white</option><option>Terracotta + sand + olive</option><option>Plum + blush + cream</option><option>Monochrome neutral</option></select></div>
+        <div class="field"><label for="typeStyle">TYPOGRAPHY CHARACTER</label><select id="typeStyle"><option>Contemporary sans-serif</option><option>Editorial serif + sans-serif</option><option>Geometric display</option><option>Humanist and warm</option><option>Arabic-first bilingual system</option></select></div>
+        <div class="field"><label for="imagery">IMAGERY STYLE</label><select id="imagery"><option>Art-directed real photography</option><option>Architectural / product renders</option><option>Graphic illustration</option><option>Texture-led editorial</option><option>People and lifestyle</option></select></div>
+      </div>
+      <div class="swatches"><div class="swatch" style="background:#173f35;color:#fff">FOREST<br>#173F35</div><div class="swatch" style="background:#d8b878;color:#222">BRASS<br>#D8B878</div><div class="swatch" style="background:#f4f1e9;color:#222;border:1px solid #ddd">IVORY<br>#F4F1E9</div><div class="swatch" style="background:#252b27;color:#fff">CHARCOAL<br>#252B27</div></div>
+      <div class="note">These swatches are a starter palette, not a final recommendation. Check accessibility, print behavior, material samples and brand distinctiveness before approval.</div>
+      <div class="form-actions"><button class="primary-btn" onclick="buildIdentity()">Generate identity direction</button><button class="secondary-btn" onclick="copyText('identityOutput')">Copy direction</button></div>
+      <div class="output" id="identityOutput">Choose your direction and generate a concise creative brief.</div>
+    </div>
+  </section>
+  <section class="view" id="prompts">
+    <div class="hero"><div><div class="eyebrow">PHASE 04 / CREATIVE PRODUCTION</div><h1>Prompt <em>studio.</em></h1><p class="sub">Create a production-ready prompt for a visual exploration. Treat generated imagery as a concept direction, not a substitute for vector artwork or verified brand assets.</p></div></div>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field"><label for="promptType">OUTPUT TYPE</label><select id="promptType"><option>Complete brand identity presentation</option><option>Logo concept exploration</option><option>Packaging mockup</option><option>Storefront / signage visualization</option><option>Social media art direction</option><option>Brand guideline board</option></select></div>
+        <div class="field"><label for="renderStyle">RENDER / PRESENTATION STYLE</label><select id="renderStyle"><option>Premium photorealistic art direction</option><option>Clean editorial brand board</option><option>Minimal studio mockups</option><option>Architectural visualization</option><option>High-contrast campaign art direction</option></select></div>
+        <div class="field full"><label for="assets">EXISTING ASSETS & NON-NEGOTIABLES</label><textarea id="assets" placeholder="Logo file supplied, exact spelling, existing colors, packaging dimensions, facade geometry…"></textarea></div>
+        <div class="field full"><label for="promptNotes">ADDITIONAL CREATIVE NOTES</label><textarea id="promptNotes" placeholder="Composition, materials, lighting, camera, audience, aspect ratio…"></textarea></div>
+      </div>
+      <div class="form-actions"><button class="primary-btn" onclick="buildPrompt()">Generate master prompt</button><button class="secondary-btn" onclick="copyText('promptOutput')">Copy prompt</button></div>
+      <div class="output" id="promptOutput">Your tailored prompt will appear here, based on your current brand brief and visual direction.</div>
+      <div class="note">Best practice: upload the real logo as a reference, explicitly require exact spelling and geometry preservation, and request editable vector production separately.</div>
+    </div>
+  </section>
+  <section class="view" id="guidelines">
+    <div class="hero"><div><div class="eyebrow">PHASE 05 / GOVERNANCE</div><h1>Consistency by <em>design.</em></h1><p class="sub">A practical checklist for turning a concept into a usable brand system across real-world touchpoints.</p></div></div>
+    <div class="panel"><h3>Brand guideline checklist</h3><p class="muted">Tick items as they are reviewed and approved. Progress is kept for this open session.</p>
+      <div id="checklist" class="stage-list">
+        <label class="stage"><input type="checkbox"> <div><b>Strategy & positioning</b><small>Audience, promise, differentiators, voice and proof points approved.</small></div></label>
+        <label class="stage"><input type="checkbox"> <div><b>Logo system</b><small>Primary, secondary, icon, clear space, minimum size and misuse examples.</small></div></label>
+        <label class="stage"><input type="checkbox"> <div><b>Color & typography</b><small>Color values for screen and print, type hierarchy and Arabic/Latin pairing.</small></div></label>
+        <label class="stage"><input type="checkbox"> <div><b>Graphic language & imagery</b><small>Patterns, iconography, photography treatment and layout principles.</small></div></label>
+        <label class="stage"><input type="checkbox"> <div><b>Touchpoint applications</b><small>Packaging, stationery, signage, digital and social templates tested.</small></div></label>
+        <label class="stage"><input type="checkbox"> <div><b>Production handoff</b><small>Organized master files, file formats, specifications and usage guide delivered.</small></div></label>
+      </div>
+      <div class="progress"><span id="checkProgress"></span></div><p class="muted" id="checkCount">0 of 6 items reviewed</p>
+      <div class="form-actions"><button class="secondary-btn" onclick="resetChecks()">Reset checklist</button><button class="primary-btn" onclick="exportSummary()">Export project summary</button></div>
+      <div class="output" id="exportOutput">Your project summary will appear here when exported.</div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast">Copied to clipboard</div>
+</div>
+<script>
+const views = [...document.querySelectorAll('.view')];
+function showView(id) {
+  views.forEach(v => v.classList.toggle('active', v.id === id));
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.view === id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+function put(id, text) { document.getElementById(id).textContent = text; }
+function saveBrief() {
+  const name = val('brandName') || 'Untitled brand project';
+  const data = `BRAND BRIEF — ${name}\nIndustry: ${val('industry')}\nAudience: ${val('audience') || 'To be defined'}\nMarket: ${val('market') || 'To be defined'}\nBusiness goals: ${val('goals') || 'To be defined'}\nPersonality: ${val('personality') || 'To be defined'}\nCompetitors / references: ${val('competitors') || 'To be researched'}\nMust keep / avoid: ${val('constraints') || 'No constraints supplied'}\n\nNEXT STEP: Validate assumptions through audience, competitor and category research before finalizing the strategy.`;
+  put('briefOutput', data);
+  const count = document.querySelectorAll('#projects .project-card').length;
+  if(name !== 'Untitled brand project' && ![...document.querySelectorAll('#projects .project-meta b')].some(x => x.textContent.startsWith(name))) {
+    const card = document.createElement('button'); card.className='project-card'; card.innerHTML='<div class="project-icon">✳</div><div class="project-meta"><b></b><small>New project · Brand discovery</small></div><span class="status">Brief</span>';
+    card.querySelector('b').textContent=name+' · Brand project'; card.onclick=()=>showView('strategy'); document.getElementById('projects').prepend(card);
+    document.getElementById('projectCount').textContent=String(count+1).padStart(2,'0');
+  }
+}
+function clearBrief() { ['brandName','audience','market','goals','personality','competitors','constraints'].forEach(id=>document.getElementById(id).value=''); put('briefOutput','Your structured brand brief will appear here.'); }
+function buildStrategy() {
+  put('strategyOutput', `STRATEGIC FOUNDATION\n\nPOSITIONING\n${val('position')||'Define the specific category and place this brand should own.'}\n\nBRAND PROMISE\n${val('promise')||'State the value customers can reliably expect.'}\n\nDIFFERENTIATORS\n${val('difference')||'Identify credible, customer-relevant points of difference.'}\n\nVOICE & TONE\n${val('voice')||'Define a consistent verbal personality.'}\n\nCORE MESSAGE\n${val('message')||'Write one memorable, audience-relevant message.'}\n\nVALIDATION GATE: Check each statement against customer evidence, competitive context and business capability before design approval.`);
+}
+function buildIdentity() {
+  put('identityOutput', `VISUAL IDENTITY DIRECTION\n\nVisual style: ${val('style')}\nColor mood: ${val('palette')}\nTypography: ${val('typeStyle')}\nImagery: ${val('imagery')}\n\nDESIGN PRINCIPLES\n1. Every visual choice should express the agreed positioning.\n2. Establish a recognizable logo hierarchy and a flexible layout system.\n3. Test color contrast and legibility at real-world sizes.\n4. Test bilingual typography and correct Arabic shaping where relevant.\n5. Validate materials, reproduction, and accessibility before final approval.\n\nDELIVERABLES: Logo suite, palette specifications, type hierarchy, graphic assets, image direction, application mockups and usage rules.`);
+}
+function buildPrompt() {
+  const name=val('brandName')||'[BRAND NAME]';
+  put('promptOutput', `Act as a senior brand strategist, art director and visual identity designer. Develop a strategically grounded ${val('promptType').toLowerCase()} for ${name}, in the ${val('industry')} category.\n\nSTRATEGIC CONTEXT\nAudience: ${val('audience')||'[define primary audience]'}\nMarket: ${val('market')||'[define market]'}\nBrand personality: ${val('personality')||'[define 3–5 traits]'}\nPositioning: ${val('position')||'[insert approved positioning]'}\nBrand promise: ${val('promise')||'[insert promise]'}\n\nCREATIVE DIRECTION\nVisual style: ${val('style')}\nColor mood: ${val('palette')}\nTypography: ${val('typeStyle')}\nImagery: ${val('imagery')}\nPresentation: ${val('renderStyle')}\nOutput: ${val('promptType')}\nExisting assets / constraints: ${val('assets')||val('constraints')||'Respect all supplied reference assets and approved brand details.'}\nAdditional notes: ${val('promptNotes')||'Use a deliberate hierarchy, restrained composition and polished professional art direction.'}\n\nQUALITY & CONTROL REQUIREMENTS\nCreate a coherent, premium, production-aware concept. Preserve any supplied logo, exact brand spelling, proportions and essential geometry; do not invent alternate wording or illegible pseudo-text. Align every color, type and material choice with the strategy. Show realistic scale, credible materials, consistent lighting and carefully controlled composition. Avoid clutter, generic stock aesthetics, random decorative elements, inconsistent logos, distorted typography and unsupported claims. If exact logo lettering is critical, use the supplied asset as a reference and place the approved vector logo in post-production. Present the result as a concept for review, not as verified final artwork.\n\nDELIVERABLE: A clear visual direction with rationale, hierarchy, application logic and recommendations for the next iteration.`);
+}
+async function copyText(id) {
+ const text = document.getElementById(id).textContent;
+ try { await navigator.clipboard.writeText(text); showToast('Copied to clipboard'); }
+ catch(e) { const area=document.createElement('textarea'); area.value=text; document.body.appendChild(area); area.select(); try { document.execCommand('copy'); showToast('Copied to clipboard'); } catch(_) { showToast('Select and copy the text manually'); } area.remove(); }
+}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2200); }
+function updateChecks() {
+ const inputs=[...document.querySelectorAll('#checklist input')], n=inputs.filter(i=>i.checked).length;
+ document.getElementById('checkProgress').style.width=(n/inputs.length*100)+'%';
+ put('checkCount',`${n} of ${inputs.length} items reviewed`);
+}
+document.querySelectorAll('#checklist input').forEach(i=>i.addEventListener('change',updateChecks));
+function resetChecks() { document.querySelectorAll('#checklist input').forEach(i=>i.checked=false); updateChecks(); }
+function exportSummary() {
+ const checks=[...document.querySelectorAll('#checklist .stage')].map(x=>`${x.querySelector('input').checked?'[x]':'[ ]'} ${x.querySelector('b').textContent}`).join('\n');
+ const summary=`STRATEGIC DESIGNER SYSTEM — PROJECT SUMMARY\n\n${document.getElementById('briefOutput').textContent}\n\n${document.getElementById('strategyOutput').textContent}\n\n${document.getElementById('identityOutput').textContent}\n\nGUIDELINE CHECKLIST\n${checks}`;
+ put('exportOutput',summary);
+}
+</script>
+</body>
+</html>
